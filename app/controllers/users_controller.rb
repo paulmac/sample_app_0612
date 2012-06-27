@@ -14,10 +14,12 @@ class UsersController < ApplicationController
   end
 
   def new
-   @user = User.new
+    signed_in_already
+    @user = User.new
   end
 
   def create
+    signed_in_already
     @user = User.new(params[:user])
     if @user.save
       sign_in @user
@@ -64,6 +66,12 @@ class UsersController < ApplicationController
     def correct_user
       @user = User.find(params[:id])
       redirect_to(root_path) unless current_user?(@user)
+    end
+
+    def signed_in_already
+      if signed_in?
+        redirect_to root_path
+      end
     end
 
 end
